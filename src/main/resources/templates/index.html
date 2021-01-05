@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/jquery-3.3.1.min.js}"></script>
+</head>
+<body>
+页面
+</body>
+</html>
+
+<script>
+    function r_reportUserActivity(mainData, metaData,url) {
+        var reportJson = {};
+        reportJson["createTime"] = (new Date()).toLocaleString();
+        $.extend(reportJson , mainData);
+        if(metaData){
+            reportJson["metaData"] = metaData;
+        }
+        $.ajax({
+            type :"post",
+            url : url,
+            async : true,
+            data: JSON.stringify(reportJson) ,
+            contentType :"application/json ; charset=utf-8",
+            dataType :"json",
+            success: function(data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function r_reportPage(mainData,metaData){
+        r_reportUserActivity(mainData,metaData,"http://localhost:8081/web/view")
+    }
+
+    function r_reportClick(mainData,metaData){
+        $(document).bind("click",function(){
+            r_reportUserActivity(mainData,metaData,"http://localhost:8081/web/click")
+        })
+    }
+    (function(){
+        alert("fdafa")
+        r_reportPage({page:window.location.href,userId:"123"},{title : "456"});
+        r_reportClick({page:window.location.href,userId:"123"},{title : "456"});
+    })();
+</script>
